@@ -15,7 +15,7 @@
 - You will receive a phone call for critical incidents.
 - Telegram alerts will continue during this process.
 <img width="291" height="801" alt="image" src="https://github.com/user-attachments/assets/b0a0dd6e-e888-4695-a924-f5a414c7e990" />
-<img width="291" height="851" alt="image" src="https://github.com/user-attachments/assets/1435f85c-3f2c-476e-b160-bf994dabcbcb" />
+<img width="361" height="821" alt="image" src="https://github.com/user-attachments/assets/1435f85c-3f2c-476e-b160-bf994dabcbcb" />
 
 ---
 
