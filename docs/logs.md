@@ -3,7 +3,7 @@
 
 
 
-# ⏱ Timeout & Skipped Blocks
+# ⏱ Timeout/Skipped Blocks
 - If a timeout occurs but the TIMEOUT_THRESHOLD is not reached yet, the bot will send Telegram alerts only.
 - If a block finalizes during this period, the bot automatically sends a “Recovered” message.
 <img width="349" height="289" alt="image" src="https://github.com/user-attachments/assets/1707c71b-11ea-4751-9a13-cba81fa5e800" />
@@ -14,8 +14,8 @@
 - By default, if 5 consecutive timeouts occur, PagerDuty will be triggered.
 - You will receive a phone call for critical incidents.
 - Telegram alerts will continue during this process.
-<img width="291" height="807" alt="image" src="https://github.com/user-attachments/assets/3d8f8f91-27a4-4c7b-9521-d3ca9b07b23c" />
-<img width="291" height="807" alt="image" src="https://github.com/user-attachments/assets/66b8c378-aa4e-479f-991c-3e8745bcf796" />
+<img width="291" height="801" alt="image" src="https://github.com/user-attachments/assets/b0a0dd6e-e888-4695-a924-f5a414c7e990" />
+<img width="291" height="851" alt="image" src="https://github.com/user-attachments/assets/1435f85c-3f2c-476e-b160-bf994dabcbcb" />
 
 ---
 
