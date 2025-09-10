@@ -35,3 +35,10 @@ Embed Links
 === Discord (optional) ===
 DISCORD_TOKEN=MTAxMjM0NTY3ODkwLmFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6
 DISCORD_CHANNEL_ID=
+```
+---
+
+### Set to true to send all Discord messages to PagerDuty, otherwise false
+```
+PD_ON_DISCORD=true
+```
