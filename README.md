@@ -6,7 +6,7 @@
 > Real-time skipped block & timeout monitoring for **Monad Testnet & Mainnet** validators.  
 > Alerts via **Telegram**, optional **PagerDuty** integration, and optional **Discord → Telegram** bridge.
 
-## 🛰️ Monad Monitor Architecture 
+## 🛰️ Monad Monitor Bot Architecture 
 
 ![Monad Monitor Architecture](assets/diagram.png)
 
