@@ -1,0 +1,24 @@
+# === Node.js Dependencies ===
+node_modules/
+
+# === Environment Files ===
+.env
+.env.local
+.env.*.local
+
+# === Logs ===
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === System Files ===
+.DS_Store
+Thumbs.db
+
+# === Temporary Files ===
+*.pem
+
+# === Optional: PM2 Logs ===
+.pm2/logs

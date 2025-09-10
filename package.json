@@ -1,0 +1,15 @@
+{
+  "name": "monadoring-telegram-monitor",
+  "version": "1.0.0",
+  "description": "Simple Huginn.tech Monad Validator Monitor",
+  "main": "monad-monitor.js",
+  "type": "module",
+  "scripts": {
+    "start": "node monad-monitor.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.21.0",
+    "dotenv": "^16.6.1",
+    "node-fetch": "^3.3.2"
+  }
+}
