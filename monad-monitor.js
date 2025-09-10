@@ -81,7 +81,7 @@ const ui = {
     `• Started: <i>${new Date().toLocaleString()}</i>`,
 
   timeout: (count, thr, round, author) =>
-    `⛔ Skipped detected (#${count}/${thr})\n` +
+    `⛔ Timeout detected (#${count}/${thr})\n` +
     `• Round: ${round}\n` +
     `• Validator: ${escapeHtml((author || '').slice(0, 24))}...\n` +
     `• When: ${new Date().toLocaleString()}`,
