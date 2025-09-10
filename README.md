@@ -26,7 +26,7 @@
   - **PagerDuty**: Incident escalation  
   - **Discord → Telegram**: Cross-channel notifications  
 - 📊 **PM2 Integration**  
-  - Auto-restarts, log management, ecosystem config ready  
+  - Auto-restarts, log management 
 
 ---
 
