@@ -46,7 +46,7 @@
 
 ```bash
 # Clone repository
-git clone https://github.com/huginn-tech/monadoring-telegram-bot
+git clone https://github.com/huginn-tech/monadoring-telegram-bot.git
 cd monadoring-telegram-bot
 
 # Install dependencies
