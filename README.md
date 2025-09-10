@@ -30,6 +30,12 @@
 
 ---
 
+### 📡 Alert Scenarios & Notifications
+- For **detailed examples** and **real alert logs**, see:  
+[**logs.md → Alert Samples & Screenshots**](./docs/logs.md)
+
+---
+
 ### 📌 Required 
 - **Node.js & npm** → [📥 Download & Install (v20.x or higher recommended)](https://nodejs.org/en/download)
 - **Telegram Bot** → [📄 Setup Guide](./docs/telegram.md) *(Token & Chat ID required)*  
@@ -117,9 +123,4 @@ pm2 save
 <img width="1071" height="384" alt="image" src="https://github.com/user-attachments/assets/d8c4c1e5-1bac-488e-8efe-b9f343c37db8" />
 <img width="348" height="144" alt="image" src="https://github.com/user-attachments/assets/938e176a-7ffc-4321-86ab-ea47656c6fc9" />
 
----
-
-### 📡 Alert Scenarios & Notifications
-- For **detailed examples** and **real alert logs**, see:  
-[**logs.md → Alert Samples & Screenshots**](./docs/logs.md)
 
