@@ -2,8 +2,6 @@
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat&logo=opensourceinitiative)
 ![Node](https://img.shields.io/badge/node-%3E%3D%2020.x-blue?style=flat&logo=node.js)
 ![Telegram](https://img.shields.io/badge/alerts-Telegram-blue?style=flat&logo=telegram)
-![PagerDuty](https://img.shields.io/badge/optional-PagerDuty-critical?style=flat&logo=pagerduty)
-![Discord](https://img.shields.io/badge/optional-Discord-purple?style=flat&logo=discord)
 
 > Real-time skipped block & timeout monitoring for **Monad Testnet & Mainnet** validators.  
 > Alerts via **Telegram**, optional **PagerDuty** integration, and optional **Discord → Telegram** bridge.
