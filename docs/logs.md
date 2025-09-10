@@ -1,3 +1,8 @@
+# NPM Logs:
+<img width="936" height="555" alt="image" src="https://github.com/user-attachments/assets/8872cf9c-13b1-495d-9353-2df1116efe13" />
+
+
+
 # ⏱ Timeout & Skipped Blocks
 - If a timeout occurs but the TIMEOUT_THRESHOLD is not reached yet, the bot will send Telegram alerts only.
 - If a block finalizes during this period, the bot automatically sends a “Recovered” message.
