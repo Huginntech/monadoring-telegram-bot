@@ -43,4 +43,7 @@ the bot triggers a PagerDuty incident → you’ll receive a phone call
 <img width="1325" height="317" alt="image" src="https://github.com/user-attachments/assets/2cb72d89-1d80-4322-961c-b54d0be03f6a" />
 <img width="540" height="486" alt="image" src="https://github.com/user-attachments/assets/2953ef24-bf40-4cd6-9a0a-398d8efe36c4" />
 
+---
+# Other Logs:
+<img width="342" height="641" alt="image" src="https://github.com/user-attachments/assets/4b299ebe-8acf-457e-8c81-8a289b46c5a3" />
 
