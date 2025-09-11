@@ -16,7 +16,7 @@
 - Telegram alerts will continue during this process.
 <img width="291" height="801" alt="image" src="https://github.com/user-attachments/assets/b0a0dd6e-e888-4695-a924-f5a414c7e990" />
 <img width="361" height="821" alt="image" src="https://github.com/user-attachments/assets/1435f85c-3f2c-476e-b160-bf994dabcbcb" />
-<img width="788" height="588" alt="image" src="https://github.com/user-attachments/assets/a830f428-14bb-49fb-801c-8f03bc15613c" />
+<img width="755" height="526" alt="image" src="https://github.com/user-attachments/assets/7fc4b15b-3946-466b-9050-819d3a34823d" />
 
 
 ---
