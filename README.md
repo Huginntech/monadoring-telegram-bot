@@ -120,7 +120,7 @@ pm2 save
 ```
 ### If everything is set up correctly, the logs and Telegram bot will look like this:
 
-<img width="1071" height="384" alt="image" src="https://github.com/user-attachments/assets/d8c4c1e5-1bac-488e-8efe-b9f343c37db8" />
-<img width="348" height="144" alt="image" src="https://github.com/user-attachments/assets/938e176a-7ffc-4321-86ab-ea47656c6fc9" />
+<img width="934" height="656" alt="image" src="https://github.com/user-attachments/assets/99b7cd6d-3644-4a20-bebe-6685105768d9" />
+<img width="319" height="164" alt="image" src="https://github.com/user-attachments/assets/ba62da8e-ff99-43f1-8055-68e6734841a0" />
 
 
