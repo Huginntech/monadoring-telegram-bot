@@ -129,35 +129,30 @@ class TimeoutMonitor {
     this.debugMode = true;
     this.chunkBuffer = "";
 
-    // timeout streak + de-dup
     this.timeoutCount = 0;
     this.lastTimeoutAt = 0;
     this.lastTimeoutRound = -1;
 
-    // strong dedupe across follow glitches
-    this.dedupeTTLms = Number(process.env.DEDUPE_TTL_MS || 120000); // 2m
-    this.seen = new Map(); // key -> expiresAt
+    this.dedupeTTLms = Number(process.env.DEDUPE_TTL_MS || 120000);
+    this.seen = new Map();
 
-    // PD state
     this.timeoutIncidentOpen = false;
     this.timeoutDedupKey = `timeout-streak-${MY_KEY_NORM || "unknown"}`;
 
-    // silence state (node)
     this.logSilenceAlerted = false;
     this.silenceIncidentOpen = false;
     this.silenceDedupKey = `ledger-tail-silence-${PD_SOURCE}`;
 
-    // Chain-level silence state
-    this.lastChainActivity = Date.now();      // last seen proposed/finalized
-    this.chainSilenceAlerted = false;         // TG alert sent?
-    this.chainSilenceIncidentOpen = false;    // PD incident open?
+    this.lastChainActivity = Date.now();
+    this.chainSilenceAlerted = false;
+    this.chainSilenceIncidentOpen = false;
     this.chainSilenceDedupKey = `chain-silence-${PD_SOURCE}`;
   }
 
   markSeen(key) {
     const now = Date.now();
     const exp = this.seen.get(key);
-    if (exp && exp > now) return false; // duplicate
+    if (exp && exp > now) return false;
     this.seen.set(key, now + this.dedupeTTLms);
     if (this.seen.size > 4000) {
       for (const [k, v] of this.seen) { if (v < now) this.seen.delete(k); }
@@ -167,7 +162,6 @@ class TimeoutMonitor {
 
   async sendAlert(message) { return tgSend(message); }
 
-  // journald JSON + optional inner MESSAGE JSON
   parseLogLine(line) {
     try {
       const jl = JSON.parse((line || "").trim());
@@ -204,15 +198,11 @@ class TimeoutMonitor {
 
   async handleParsed(log) {
     const now = Date.now();
-
-    // any log → reset node silence timer
     this.lastLogTimestamp = now;
 
-    // Chain activity (all validators)
     if (log.type === "proposed_block" || log.type === "finalized_block") {
       this.lastChainActivity = now;
 
-      // resolve open chain silence incidents TG+PD
       if (this.chainSilenceIncidentOpen) {
         await pdResolve(this.chainSilenceDedupKey, "Chain activity resumed");
         this.chainSilenceIncidentOpen = false;
@@ -223,7 +213,6 @@ class TimeoutMonitor {
       }
     }
 
-    // node log-silence incident resolve
     if (this.silenceIncidentOpen) {
       await pdResolve(this.silenceDedupKey, "log activity restored");
       this.silenceIncidentOpen = false;
@@ -233,12 +222,9 @@ class TimeoutMonitor {
       }
     }
 
-    // global de-dup (type+round)
     if (!this.markSeen(`${log.type}:${log.round}`)) return;
 
-    // ---- TIMEOUT ----
     if (log.type === "timeout") {
-      // per-round dedupe
       if (log.round === this.lastTimeoutRound) return;
       this.lastTimeoutRound = log.round;
 
@@ -255,7 +241,6 @@ class TimeoutMonitor {
       return;
     }
 
-    // ---- FINALIZED (reset) ----
     if (log.type === "finalized_block" && log.authorNorm === MY_KEY_NORM && MY_KEY_NORM) {
       if (this.timeoutCount > 0) {
         await this.sendAlert(ui.timeoutRecovered(log.round, this.timeoutCount));
@@ -273,7 +258,6 @@ class TimeoutMonitor {
       const now = Date.now();
       const deltaSecNode = Math.floor((now - this.lastLogTimestamp) / 1000);
 
-      // 1) Node (ledger-tail) log-silence
       if (deltaSecNode > LOG_SILENCE_TG_SEC && !this.logSilenceAlerted) {
         this.logSilenceAlerted = true;
         await this.sendAlert(ui.logSilenceWarn(deltaSecNode));
@@ -292,8 +276,6 @@ class TimeoutMonitor {
         this.silenceIncidentOpen = true;
       }
 
-      // 2) ⬇️ Chain silence (optional)
-      // If ledger-tail is active (node not silent) and chain is quiet for a long time → warn.
       if (CHAIN_SILENCE_SEC > 0 && deltaSecNode <= LOG_SILENCE_TG_SEC) {
         const deltaSecChain = Math.floor((now - this.lastChainActivity) / 1000);
         if (deltaSecChain >= CHAIN_SILENCE_SEC && !this.chainSilenceAlerted) {
@@ -341,7 +323,6 @@ class TimeoutMonitor {
     jc.on("close", async code => {
       console.log(`journalctl exited with ${code}`);
       await this.sendAlert(ui.crash(code));
-      // note: node-silence watchdog PD part already handles this
     });
 
     this.startSilenceWatchdog();
@@ -353,7 +334,7 @@ class TimeoutMonitor {
   }
 }
 
-// ---------- Optional: Discord → Telegram forward ----------
+// ---------- Optional: Discord → Telegram + PagerDuty forward ----------
 class DiscordBridge {
   constructor() {
     this.enabled = Boolean(DISCORD_TOKEN && CHANNEL_IDS.length && TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID);
@@ -372,7 +353,21 @@ class DiscordBridge {
         const chan = msg.channel && "name" in msg.channel ? msg.channel.name : "#channel";
         const jump = `https://discord.com/channels/${msg.guildId}/${msg.channelId}/${msg.id}`;
         const content = msg.content ? escapeHtml(msg.content) : "";
+
         await tgSend(`📣 <b>${escapeHtml(guild)} #${escapeHtml(chan)}</b>\n${content}\n\n🔗 <a href="${jump}">View on Discord</a>`);
+
+        if (process.env.PD_ON_DISCORD === "true" && PD_ENABLED) {
+          await pdTrigger(
+            `discord-msg-${msg.id}`,
+            `New Discord message in ${guild} #${chan}`,
+            "info",
+            {
+              channel: chan,
+              content: msg.content || "(no content)",
+              jump_url: jump
+            }
+          );
+        }
       } catch (e) { console.error("discord forward:", e); }
     });
     await this.client.login(DISCORD_TOKEN);
