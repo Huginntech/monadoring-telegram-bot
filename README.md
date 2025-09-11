@@ -123,4 +123,7 @@ pm2 save
 <img width="934" height="656" alt="image" src="https://github.com/user-attachments/assets/99b7cd6d-3644-4a20-bebe-6685105768d9" />
 <img width="319" height="164" alt="image" src="https://github.com/user-attachments/assets/ba62da8e-ff99-43f1-8055-68e6734841a0" />
 
-
+---
+If you encounter any issues or need assistance, feel free to reach out:
+- **Telegram:** [@sourled](https://t.me/sourled)
+- **Discord:** gokay5690
