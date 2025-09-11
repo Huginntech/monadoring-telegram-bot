@@ -26,7 +26,6 @@ const TIMEOUT_THRESHOLD = Number(process.env.TIMEOUT_THRESHOLD || 5);
 const LOG_SILENCE_TG_SEC = Number(process.env.LOG_SILENCE_TG_SEC || 60);
 const LOG_SILENCE_PD_SEC = Number(process.env.LOG_SILENCE_PD_SEC || 300);
 
-// ⬇️ New: Chain-level silence threshold (optional; 0 → disabled)
 const CHAIN_SILENCE_SEC = Number(process.env.CHAIN_SILENCE_SEC || 0);
 
 // Discord (optional)
@@ -104,7 +103,6 @@ const ui = {
 
   logSilenceResolved: () => `🟩 <b>Logs resumed</b>\n• ledger-tail activity detected again`,
 
-  // ⬇️ New: Chain silence Telegram messages
   chainSilentWarn: (sec) =>
     `🕒 <b>No new blocks on chain</b>\n` +
     `• ~<b>${Math.floor(sec/60) || 1} min</b> without proposed/finalized\n` +
@@ -149,7 +147,7 @@ class TimeoutMonitor {
     this.silenceIncidentOpen = false;
     this.silenceDedupKey = `ledger-tail-silence-${PD_SOURCE}`;
 
-    // ⬇️ New: Chain-level silence state
+    // Chain-level silence state
     this.lastChainActivity = Date.now();      // last seen proposed/finalized
     this.chainSilenceAlerted = false;         // TG alert sent?
     this.chainSilenceIncidentOpen = false;    // PD incident open?
@@ -210,7 +208,7 @@ class TimeoutMonitor {
     // any log → reset node silence timer
     this.lastLogTimestamp = now;
 
-    // ⬇️ New: Chain activity (all validators)
+    // Chain activity (all validators)
     if (log.type === "proposed_block" || log.type === "finalized_block") {
       this.lastChainActivity = now;
 
