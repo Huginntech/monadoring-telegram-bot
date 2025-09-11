@@ -16,6 +16,8 @@
 - Telegram alerts will continue during this process.
 <img width="291" height="801" alt="image" src="https://github.com/user-attachments/assets/b0a0dd6e-e888-4695-a924-f5a414c7e990" />
 <img width="361" height="821" alt="image" src="https://github.com/user-attachments/assets/1435f85c-3f2c-476e-b160-bf994dabcbcb" />
+<img width="788" height="588" alt="image" src="https://github.com/user-attachments/assets/a830f428-14bb-49fb-801c-8f03bc15613c" />
+
 
 ---
 
@@ -45,5 +47,5 @@ the bot triggers a PagerDuty incident → you’ll receive a phone call
 
 ---
 # Other Logs:
-<img width="342" height="641" alt="image" src="https://github.com/user-attachments/assets/4b299ebe-8acf-457e-8c81-8a289b46c5a3" />
+<img width="347" height="109" alt="image" src="https://github.com/user-attachments/assets/a7d46654-11a7-4b66-bb1e-c86d326848be" />
 
