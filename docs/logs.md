@@ -6,7 +6,7 @@
 # ⏱ Timeout/Skipped Blocks
 - If a timeout occurs but the TIMEOUT_THRESHOLD is not reached yet, the bot will send Telegram alerts only.
 - If a block finalizes during this period, the bot automatically sends a “Recovered” message.
-<img width="349" height="289" alt="image" src="https://github.com/user-attachments/assets/1707c71b-11ea-4751-9a13-cba81fa5e800" />
+<img width="385" height="226" alt="image" src="https://github.com/user-attachments/assets/aae8c377-5bc9-427b-a0b7-bda8ba61d1c7" />
 
 ---
 
