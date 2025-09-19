@@ -22,10 +22,6 @@ if (PD_ENABLED && !PD_EVENTS_URL) process.exit(console.error("❌ ERROR: PAGERDU
 const JOURNAL_UNIT = (process.env.JOURNAL_UNIT || "monad-ledger-tail").trim();
 
 const TIMEOUT_THRESHOLD = Number(process.env.TIMEOUT_THRESHOLD || 5);
-
-const LOG_SILENCE_TG_SEC = Number(process.env.LOG_SILENCE_TG_SEC || 60);
-const LOG_SILENCE_PD_SEC = Number(process.env.LOG_SILENCE_PD_SEC || 300);
-
 const CHAIN_SILENCE_SEC = Number(process.env.CHAIN_SILENCE_SEC || 0);
 
 // Discord (optional)
@@ -77,10 +73,9 @@ async function pdResolve(dedupKey, summary = "Recovered") {
 
 // ---------- UI ----------
 const ui = {
-  started: (tgSec, pdSec, thr, chainSec) =>
+  started: (thr, chainSec) =>
     `🟢 <b>Monitor Online</b>\n` +
     `• Watching: <code>timeout</code>\n` +
-    `• Silence → TG: <b>${tgSec}s</b>, PD: <b>${pdSec}s</b>\n` +
     (chainSec > 0 ? `• Chain silence: <b>${chainSec}s</b>\n` : ``) +
     `• Timeout threshold: <b>${thr}</b>\n` +
     `• Started: <i>${new Date().toLocaleString()}</i>`,
@@ -96,13 +91,6 @@ const ui = {
     `• Finalized observed on round <b>${round}</b>\n` +
     `• Previous timeout streak: <b>${had}</b>`,
 
-  logSilenceWarn: (sec) =>
-    `🚨 <b>No ledger-tail logs</b>\n` +
-    `• Silent for <b>${sec}s</b>\n` +
-    `• Check: <code>${escapeHtml(JOURNAL_UNIT)}</code> service`,
-
-  logSilenceResolved: () => `🟩 <b>Logs resumed</b>\n• ledger-tail activity detected again`,
-
   chainSilentWarn: (sec) =>
     `🕒 <b>No new blocks on chain</b>\n` +
     `• ~<b>${Math.floor(sec/60) || 1} min</b> without proposed/finalized\n` +
@@ -112,7 +100,8 @@ const ui = {
     `🟩 <b>Chain activity resumed</b>\n` +
     `• New proposed/finalized observed`,
 
-  crash: (code) => `🔴 <b>Monitoring stopped</b>\n• journalctl exited with code <b>${code}</b>`,
+  crash: (code) => `🔴 <b>No ledger-tail logs</b>\n• journalctl exited with code <b>${code}</b>`,
+  resumed: () => `🟩 <b>Logs resumed</b>\n• ledger-tail back online`,
 };
 
 // ---------- Monitor ----------
@@ -139,14 +128,12 @@ class TimeoutMonitor {
     this.timeoutIncidentOpen = false;
     this.timeoutDedupKey = `timeout-streak-${MY_KEY_NORM || "unknown"}`;
 
-    this.logSilenceAlerted = false;
-    this.silenceIncidentOpen = false;
-    this.silenceDedupKey = `ledger-tail-silence-${PD_SOURCE}`;
-
     this.lastChainActivity = Date.now();
     this.chainSilenceAlerted = false;
     this.chainSilenceIncidentOpen = false;
     this.chainSilenceDedupKey = `chain-silence-${PD_SOURCE}`;
+
+    this.ledgerCrashed = false;
   }
 
   markSeen(key) {
@@ -213,15 +200,6 @@ class TimeoutMonitor {
       }
     }
 
-    if (this.silenceIncidentOpen) {
-      await pdResolve(this.silenceDedupKey, "log activity restored");
-      this.silenceIncidentOpen = false;
-      if (this.logSilenceAlerted) {
-        this.logSilenceAlerted = false;
-        await this.sendAlert(ui.logSilenceResolved());
-      }
-    }
-
     if (!this.markSeen(`${log.type}:${log.round}`)) return;
 
     if (log.type === "timeout") {
@@ -256,33 +234,23 @@ class TimeoutMonitor {
   startSilenceWatchdog() {
     setInterval(async () => {
       const now = Date.now();
-      const deltaSecNode = Math.floor((now - this.lastLogTimestamp) / 1000);
 
-      if (deltaSecNode > LOG_SILENCE_TG_SEC && !this.logSilenceAlerted) {
-        this.logSilenceAlerted = true;
-        await this.sendAlert(ui.logSilenceWarn(deltaSecNode));
-      }
-      if (
-        PD_ENABLED &&
-        deltaSecNode > LOG_SILENCE_PD_SEC &&
-        !this.silenceIncidentOpen
-      ) {
-        await pdTrigger(
-          this.silenceDedupKey,
-          `No logs from ${JOURNAL_UNIT} for ${deltaSecNode}s`,
-          "critical",
-          { silence_seconds: deltaSecNode }
-        );
-        this.silenceIncidentOpen = true;
-      }
+      // 🔒 ledger-tail crash ise chain quiet kontrolünü tamamen kapat
+      if (this.ledgerCrashed) return;
 
-      if (CHAIN_SILENCE_SEC > 0 && deltaSecNode <= LOG_SILENCE_TG_SEC) {
+      // sadece chain quiet kontrolü
+      if (CHAIN_SILENCE_SEC > 0) {
         const deltaSecChain = Math.floor((now - this.lastChainActivity) / 1000);
         if (deltaSecChain >= CHAIN_SILENCE_SEC && !this.chainSilenceAlerted) {
           this.chainSilenceAlerted = true;
           await this.sendAlert(ui.chainSilentWarn(deltaSecChain));
           if (PD_ENABLED && !this.chainSilenceIncidentOpen) {
-            await pdTrigger(this.chainSilenceDedupKey, `Chain has no new blocks for ~${Math.floor(deltaSecChain/60) || 1} min`, "warning", { silence_seconds: deltaSecChain });
+            await pdTrigger(
+              this.chainSilenceDedupKey,
+              `Chain has no new blocks for ~${Math.floor(deltaSecChain/60) || 1} min`,
+              "warning",
+              { silence_seconds: deltaSecChain }
+            );
             this.chainSilenceIncidentOpen = true;
           }
         }
@@ -294,9 +262,9 @@ class TimeoutMonitor {
     console.log("🚀 Timeout Monitor starting…");
     console.log(`🔑 Validator: ${MY_VALIDATOR_KEY ? MY_VALIDATOR_KEY.substring(0,20)+"…" : "(not set)"}`);
     console.log(`☎️ PD: ${PD_ENABLED ? "ENABLED" : "DISABLED"} | Timeout threshold: ${TIMEOUT_THRESHOLD}`);
-    console.log(`🔭 unit: ${JOURNAL_UNIT} | silence TG: ${LOG_SILENCE_TG_SEC}s, PD: ${LOG_SILENCE_PD_SEC}s | chain silence: ${CHAIN_SILENCE_SEC || 0}s`);
+    console.log(`🔭 unit: ${JOURNAL_UNIT} | chain silence: ${CHAIN_SILENCE_SEC || 0}s`);
 
-    await this.sendAlert(ui.started(LOG_SILENCE_TG_SEC, LOG_SILENCE_PD_SEC, TIMEOUT_THRESHOLD, CHAIN_SILENCE_SEC));
+    await this.sendAlert(ui.started(TIMEOUT_THRESHOLD, CHAIN_SILENCE_SEC));
 
     let jc;
     try {
@@ -306,7 +274,13 @@ class TimeoutMonitor {
       return;
     }
 
-    const onData = (data) => {
+    const onData = async (data) => {
+      // ledger-tail yeniden başladıysa recovery bildirimi
+      if (this.ledgerCrashed) {
+        this.ledgerCrashed = false;
+        await this.sendAlert(ui.resumed());
+      }
+
       this.lastLogTimestamp = Date.now();
       this.chunkBuffer += data.toString();
       const lines = this.chunkBuffer.split("\n");
@@ -322,6 +296,7 @@ class TimeoutMonitor {
     jc.stderr.on("data", d => console.error("journalctl error:", d.toString()));
     jc.on("close", async code => {
       console.log(`journalctl exited with ${code}`);
+      this.ledgerCrashed = true;
       await this.sendAlert(ui.crash(code));
     });
 
