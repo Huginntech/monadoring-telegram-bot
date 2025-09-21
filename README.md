@@ -30,13 +30,13 @@
 
 ---
 
-### 📡 Alert Scenarios & Notifications
+###  Alert Scenarios & Notifications
 - For **detailed examples** and **real alert logs**, see:  
 [**logs.md → Alert Samples & Screenshots**](./docs/logs.md)
 
 ---
 
-### 📌 Required 
+###  Required 
 - **Node.js & npm** → [📥 Download & Install (v20.x or higher recommended)](https://nodejs.org/en/download)
 - **Telegram Bot** → [📄 Setup Guide](./docs/telegram.md) *(Token & Chat ID required)*  
 - **Optional Discord** → [📄 Setup Guide](./docs/discord.md) *(Bot Token & Channel ID)*  
@@ -56,7 +56,7 @@ npm install
 cp .env.example .env
 ```
 
-## ⚙️ Configuration .env Example
+## Configuration .env Example
 ```bash
 # === Validator settings (required) ===
 # SECP public key of your validator (compressed hex)
@@ -90,7 +90,7 @@ PD_ON_DISCORD=false
 MY_VALIDATOR_KEY is required — the bot exits if missing.
 If PAGERDUTY_ROUTING_KEY is set but PAGERDUTY_EVENTS_URL is missing, the bot will not start
 
-## 🚀 Start the bot
+## Start the bot
 ```bash
 # Start the bot manually
 npm start
