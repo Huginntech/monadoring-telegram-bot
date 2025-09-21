@@ -73,10 +73,6 @@ TIMEOUT_THRESHOLD=5
 DEDUPE_TTL_MS=120000
 # Trigger Telegram alert if NO new blocks are proposed/finalized on the entire chain within X seconds.
 CHAIN_SILENCE_SEC=300
-# Ledger-tail log silence detection
-LOG_SILENCE_TG_SEC=60
-LOG_SILENCE_PD_SEC=300
-
 
 # === PagerDuty (optional) ===
 # Events API routing key; leave empty to disable PD
