@@ -25,8 +25,6 @@
 - If the monad-ledger-tail service stops logging or crashes:
 The bot immediately sends a Telegram “Log Silence” warning.
 
-- If the log silence continues for longer than LOG_SILENCE_PD_SEC, 
-the bot triggers a PagerDuty incident → you’ll receive a phone call
 - When the service resumes, a “Resumed” notification is sent to Telegram.
 <img width="384" height="196" alt="image" src="https://github.com/user-attachments/assets/4a5df425-c13e-41a3-a94b-cdad16570667" />
 
